@@ -3,6 +3,7 @@ import mysqldao
 import json
 import datetime
 import time
+import urllib
 
 API_HOST = 'api.yelp.com'
 SEARCH_PATH = '/v2/search/'
@@ -111,6 +112,8 @@ def extract_by_phone(phone_list=None):
     exist_phone_tuple = mysqldao.select_unique_column(db_name,tb_log_phone,'phone')
     count = 0
     for phone in phone_list:
+        biz_data={}
+        biz_list=[]
         phone=str(phone).replace(' ','').replace('_','')
         if len(phone) ==11:
             phone = phone[1:]
@@ -146,7 +149,8 @@ def json_transform_phone(data_entry_list, columns_list):
                             categories+=", "+str(cat_dic["name"])
                         tran_data[key]=categories[2:]
                     elif key == "id":
-                        url=data["url"]
+                        url=urllib.unquote(data["url"])
+                        print url
                         tran_data[key]=url[url.rfind('/')+1:]
                     else:
                         tran_data[key] = dic_look_up(data,key)
