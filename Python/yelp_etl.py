@@ -15,12 +15,12 @@ BUSINESS='businesses'
 
 db_name = 'dwdproject'
 tb_inspection='inspection'
-tb_log_phone='extract_log_phone'
-tb_log_zipcode='extract_log_zipcode'
+tb_log_phone='log_phone'
+tb_log_zipcode='log_zipcode'
 tb_yelp_phone='yelp_phone'
 tb_yelp_zipcode='yelp_zipcode'
 tb_zipcode='zipcode_nyc'
-tb_integration='integration'
+tb_insp_norm='insp_norm'
 
 url_params = {
         'term': TERM.replace(' ', '+'),
@@ -105,7 +105,7 @@ def extract_by_phone(phone_list=None):
     biz_list=[]
     if phone_list==None:
         phone_list=[]
-        temp_phone_list=mysqldao.select(db_name, tb_integration, ['PHONE'])
+        temp_phone_list=mysqldao.select(db_name, tb_insp_norm, ['PHONE'])
         for p in temp_phone_list:
             phone_list.append(p[0])
     exist_phone_list=[]
