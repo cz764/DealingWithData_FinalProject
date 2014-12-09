@@ -63,7 +63,7 @@ keyvalues_list=the values of columns used under WHERE conditions
 Sample:
 select('mydb', 'yelp_phone', ['phone', 'zipcode'], ['city'], [{'city': New York'}])
 will generate a SQL statement:
-SELECT phone, zipcode from mydb.yelp_phone where city = 'New York'
+`SELECT phone, zipcode from mydb.yelp_phone where city = 'New York'`
 to manipulate the database
 """
 def select(dbname, tbname, targetcolumns, keycolums=None, keyvalues_list=None):
@@ -122,14 +122,11 @@ keycolums=A list of columns that used under WHERE as conditions
 data_entry=A list of dictionary, that each one includes all the parameters for updating
 Sample:
 update('mydb', 'yelp_phone', ['longitude', 'latitude'], ['phone'], 
-	[{'longitude':37.1234, 'latitude': 74.1112, 'phone':7181234567},
-	 {'longitude':37.1674, 'latitude': 74.1134, 'phone':2015239567}])
+	[{'longitude':37.1674, 'latitude': 74.1134, 'phone':2015239567}])
 will generate a SQL statement:
-update mydb.yelp_phone
-SET longitude = 37.1674,
-latitude = 74.1134
-WHERE
-phone = 2015239567
+`UPDATE mydb.yelp_phone
+SET longitude = 37.1674, latitude = 74.1134
+WHERE phone = 2015239567`
 to manipulate the database
 """
 def update(dbname, tbname, updatecolumns, keycolums, data_entry):
