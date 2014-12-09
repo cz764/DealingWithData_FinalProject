@@ -40,9 +40,7 @@ def select_statement(dbname, tbname, targetcolumns=None, keycolums=None):
 	init_length=len(select_statement)
 	column_list=column_names(dbname, tbname)
 	if targetcolumns == None:
-		targetcolumns=column_list
-		for target in targetcolumns:
-			select_statement+=target[0]+", "
+		select_statement+="*"
 	else:
 		for target in targetcolumns:
 			select_statement+=target+", "
@@ -62,6 +60,11 @@ tbname=table name
 targetcolumns=the columns that are to be selected
 keycolums=the columns used under WHERE conditions
 keyvalues_list=the values of columns used under WHERE conditions
+Sample:
+select('mydb', 'yelp_phone', ['phone', 'zipcode'], ['city'], [{'city': New York'}])
+will generate a SQL statement:
+SELECT phone, zipcode from mydb.yelp_phone where city = 'New York'
+to manipulate the database
 """
 def select(dbname, tbname, targetcolumns, keycolums=None, keyvalues_list=None):
 	query=select_statement(dbname, tbname, targetcolumns, keycolums)
@@ -89,17 +92,17 @@ def select(dbname, tbname, targetcolumns, keycolums=None, keyvalues_list=None):
 	return result_list
 
 
-def update_statement(dbname, tbname, valuecolumns, keycolums):
+def update_statement(dbname, tbname, updatecolumns, keycolums):
 	update_statement="UPDATE "+dbname+"."+tbname+" SET "
 	init_length = len(update_statement)
 	column_list=column_names(dbname, tbname)
-	if isinstance(valuecolumns, list):
-		if len(valuecolumns) == 0:
-			valuecolumns=column_list
+	if isinstance(updatecolumns, list):
+		if len(updatecolumns) == 0:
+			updatecolumns=column_list
 	else:
-		valuecolumns=column_list
+		updatecolumns=column_list
 	for column in column_list:
-		if column in valuecolumns:
+		if column in updatecolumns:
 			update_statement+=column[0]+"=%s, "
 		else:
 			print column[0]
@@ -113,21 +116,36 @@ def update_statement(dbname, tbname, valuecolumns, keycolums):
 			update_statement+=" AND "+keycolum[0]+"=%s"
 	return update_statement
 
-
-def update(dbname, tbname, valuecolumns, keycolums, data_entry):
+"""
+updatecolumns=A list of columns that are to be updated
+keycolums=A list of columns that used under WHERE as conditions
+data_entry=A list of dictionary, that each one includes all the parameters for updating
+Sample:
+update('mydb', 'yelp_phone', ['longitude', 'latitude'], ['phone'], 
+	[{'longitude':37.1234, 'latitude': 74.1112, 'phone':7181234567},
+	 {'longitude':37.1674, 'latitude': 74.1134, 'phone':2015239567}])
+will generate a SQL statement:
+update mydb.yelp_phone
+SET longitude = 37.1674,
+latitude = 74.1134
+WHERE
+phone = 2015239567
+to manipulate the database
+"""
+def update(dbname, tbname, updatecolumns, keycolums, data_entry):
 	with con:
 		cursor = con.cursor()
-	query=update_statement(dbname, tbname, valuecolumns, keycolums)
+	query=update_statement(dbname, tbname, updatecolumns, keycolums)
 	if query == "":
 		return False
-	if isinstance(valuecolumns, list):
-		if len(valuecolumns) == 0:
-			valuecolumns=column_names(dbname, tbname)
+	if isinstance(updatecolumns, list):
+		if len(updatecolumns) == 0:
+			updatecolumns=column_names(dbname, tbname)
 	else:
-		valuecolumns=column_names(dbname, tbname)
+		updatecolumns=column_names(dbname, tbname)
 	for data in data_entry:
 		para_list = []
-		for column in valuecolumns:
+		for column in updatecolumns:
 			para_list.append(data[column[0]])
 		for key in keycolums:
 			para_list.append(data[key])
