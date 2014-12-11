@@ -10,7 +10,7 @@ import sys
 """
 Configure database connection parameters
 """
-con = mdb.connect(host = 'localhost', user = 'root', passwd = '', charset='utf8');
+con = mdb.connect(host = 'localhost', user = 'root', passwd = 'jane@nyu2013', charset='utf8');
 
 """
 Select all the column names in a given table.
