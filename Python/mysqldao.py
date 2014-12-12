@@ -10,7 +10,7 @@ import sys
 """
 Configure database connection parameters
 """
-con = mdb.connect(host = 'localhost', user = 'root', passwd = 'jane@nyu2013', charset='utf8');
+con = mdb.connect(host = 'localhost', user = 'root', passwd = '', charset='utf8');
 
 """
 Select all the column names in a given table.
@@ -102,12 +102,10 @@ def update_statement(dbname, tbname, updatecolumns, keycolums):
 	else:
 		updatecolumns=column_list
 	for column in column_list:
-		if column in updatecolumns:
-			update_statement+=column[0]+"=%s, "
-		else:
-			print column[0]
+		c=column[0]
+		if c in updatecolumns:
+			update_statement+=c+"=%s, "
 	if len(update_statement) == init_length:
-		print update_statement
 		return ""
 	update_statement=update_statement[:len(update_statement)-2]
 	update_statement+=" WHERE 1=1"
@@ -143,7 +141,7 @@ def update(dbname, tbname, updatecolumns, keycolums, data_entry):
 	for data in data_entry:
 		para_list = []
 		for column in updatecolumns:
-			para_list.append(data[column[0]])
+			para_list.append(data[column])
 		for key in keycolums:
 			para_list.append(data[key])
 		query_parameters=tuple(para_list)
