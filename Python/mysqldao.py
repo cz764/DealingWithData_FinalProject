@@ -39,7 +39,7 @@ def select_statement(dbname, tbname, targetcolumns=None, keycolums=None):
 	select_statement="SELECT "
 	init_length=len(select_statement)
 	column_list=column_names(dbname, tbname)
-	if targetcolumns == None:
+	if targetcolumns == None or len(targetcolumns)==0:
 		select_statement+="*"
 	else:
 		for target in targetcolumns:
@@ -66,7 +66,7 @@ will generate a SQL statement:
 `SELECT phone, zipcode from mydb.yelp_phone where city = 'New York'`
 to manipulate the database
 """
-def select(dbname, tbname, targetcolumns, keycolums=None, keyvalues_list=None):
+def select(dbname, tbname, targetcolumns=None, keycolums=None, keyvalues_list=None):
 	query=select_statement(dbname, tbname, targetcolumns, keycolums)
 	result_list=[]
 	with con:
@@ -131,6 +131,8 @@ def update(dbname, tbname, updatecolumns, keycolums, data_entry):
 	with con:
 		cursor = con.cursor()
 	query=update_statement(dbname, tbname, updatecolumns, keycolums)
+	print query
+
 	if query == "":
 		return False
 	if isinstance(updatecolumns, list):
@@ -194,3 +196,4 @@ def select_unique_column(dbname,tbname, columnname):
 		return column_value_list
 	else:
 		return []
+		
