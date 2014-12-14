@@ -1,0 +1,5 @@
+# mysqldao.update('yelp', 'yelp_phone', ['latitude', 'longitude'], ['phone'], [entry])
+# print mysqldao.select('yelp', 'yelp_phone', ['*'], ['phone'],[{'phone': entry["phone"]}])
+
+example url:
+http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=false
