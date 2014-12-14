@@ -11,6 +11,8 @@ import sys
 Configure database connection parameters
 """
 con = mdb.connect(host = 'localhost', user = 'root', passwd = 'jane@nyu2013', charset='utf8');
+with con:
+	cursor = con.cursor()
 
 """
 Select all the column names in a given table.
@@ -128,8 +130,8 @@ WHERE phone = 2015239567`
 to manipulate the database
 """
 def update(dbname, tbname, updatecolumns, keycolums, data_entry):
-	with con:
-		cursor = con.cursor()
+	# with con:
+	# 	cursor = con.cursor()
 	query=update_statement(dbname, tbname, updatecolumns, keycolums)
 	if query == "":
 		return False
