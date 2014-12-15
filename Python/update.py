@@ -21,14 +21,14 @@ entries = []
 del address[0]
 
 little = []
-little.append(address[1])
-little.append(address[2])
-little.append(address[3])
+# little.append(address[1])
+# little.append(address[2])
+# little.append(address[3])
 
 import MySQLdb as mdb
 import sys
 
-con = mdb.connect(host = 'localhost', user = 'root', passwd = 'jane@nyu2013', charset='utf8');
+con = mdb.connect(host = 'localhost', user = 'root', passwd = '', charset='utf8');
 cursor = con.cursor()
 
 db_name = 'yelp'
