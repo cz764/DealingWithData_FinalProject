@@ -9,9 +9,16 @@ tb_yelp_user='yelp_user'
 
 USER_URL='http://www.yelp.com/user_details?userid='
 target_user_list_query="""
-    SELECT DISTINCT(userid) from log_user
+    SELECT userid from dwdproject.log_user
     WHERE userid not in (select userid from dwdproject.yelp_user)
     """
+target_user_list_query2="""SELECT userid, count(userid)  num 
+from dwdproject.yelp_review
+WHERE userid not in
+(select userid from dwdproject.yelp_user)
+group by userid
+ORDER by num desc
+"""
 #target_user='I-nh97QfQDXnmL4nJY4qvw'
 print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 target_user_list=mysqldao.execute_query(target_user_list_query)
