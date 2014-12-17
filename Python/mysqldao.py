@@ -10,7 +10,7 @@ import sys
 """
 Configure database connection parameters
 """
-con = mdb.connect(host = 'localhost', user = 'root', passwd = 'jane@nyu2013', charset='utf8');
+con = mdb.connect(host = 'localhost', user = 'root', passwd = '', charset='utf8');
 with con:
 	cursor = con.cursor()
 
@@ -45,15 +45,29 @@ def select_statement(dbname, tbname, targetcolumns=None, keycolums=None):
 		select_statement+="*"
 	else:
 		for target in targetcolumns:
-			select_statement+=target+", "
+			select_statement+="`"+target+"`"+", "
 	select_statement=select_statement[:len(select_statement)-2]
 	select_statement+=" FROM "+dbname+"."+tbname+" WHERE 1=1"
 	if keycolums==None:
 		return select_statement
 	for key in column_list:
 		if key[0] in keycolums:
-			select_statement+=" AND "+key[0]+"=%s"
+			select_statement+=" AND `"+key[0]+"`=%s"
 	return select_statement
+
+def execute_query(query, query_parameters=()):
+	result_list=[]
+	try:
+	#if True:
+		with con:
+			cursor = con.cursor()
+		cursor.execute(query, query_parameters)
+		con.commit()
+		for i in range(cursor.rowcount):
+			result_list.append(cursor.fetchone())
+	except:
+		print "=======Exception for", query
+	return result_list
 
 """
 Use a generic SELECT statement and select values from a given table.
@@ -70,6 +84,7 @@ to manipulate the database
 """
 def select(dbname, tbname, targetcolumns=None, keycolums=None, keyvalues_list=None):
 	query=select_statement(dbname, tbname, targetcolumns, keycolums)
+	#print query
 	result_list=[]
 	with con:
 		cursor = con.cursor()
@@ -90,7 +105,7 @@ def select(dbname, tbname, targetcolumns=None, keycolums=None, keyvalues_list=No
 		con.commit()
 		for i in range(cursor.rowcount):
 			result_list.append(cursor.fetchone())
-	con.close()
+	#con.close()
 	return result_list
 
 
@@ -106,14 +121,14 @@ def update_statement(dbname, tbname, updatecolumns, keycolums):
 	for column in column_list:
 		c=column[0]
 		if c in updatecolumns:
-			update_statement+=c+"=%s, "
+			update_statement+="`"+c+"`=%s, "
 	if len(update_statement) == init_length:
 		return ""
 	update_statement=update_statement[:len(update_statement)-2]
 	update_statement+=" WHERE 1=1"
 	for keycolum in column_list:
 		if keycolum[0] in keycolums:
-			update_statement+=" AND "+keycolum[0]+"=%s"
+			update_statement+=" AND `"+keycolum[0]+"`=%s"
 	return update_statement
 
 """
@@ -130,11 +145,7 @@ WHERE phone = 2015239567`
 to manipulate the database
 """
 def update(dbname, tbname, updatecolumns, keycolums, data_entry):
-	# with con:
-	# 	cursor = con.cursor()
 	query=update_statement(dbname, tbname, updatecolumns, keycolums)
-	print query
-
 	if query == "":
 		return False
 	if isinstance(updatecolumns, list):
@@ -149,12 +160,13 @@ def update(dbname, tbname, updatecolumns, keycolums, data_entry):
 		for key in keycolums:
 			para_list.append(data[key])
 		query_parameters=tuple(para_list)
-		try:
+		#try:
+		if True:
 			cursor.execute(query, query_parameters)
 			con.commit()
-		except:
-			print "====Exception.\n"+str(query_parameters)
-	cursor.close()
+		#except:
+		#	print "====Exception.\n"+str(query_parameters)
+	#cursor.close()
 
 
 def insert_statement(dbname,tbname):
@@ -168,7 +180,9 @@ def insert_statement(dbname,tbname):
 		insert_query+="%s,"
 	insert_query=insert_query[:len(insert_query)-1]+")"
 	return insert_query
-
+"""
+data_entry: a list of data each is a map
+"""
 def insert(dbname, tbname, data_entry):
 	with con:
 		cursor = con.cursor()
@@ -180,11 +194,13 @@ def insert(dbname, tbname, data_entry):
 			data_list.append(data[column[0]])
 		query_parameters=tuple(data_list)
 		try:
+		#if True:
 			cursor.execute(query, query_parameters)
 			con.commit()
 		except:
+		#else:
 			print "====Exception of insertion.\n"+str(query_parameters)
-	cursor.close()
+	#cursor.close()
 
 def select_unique_column(dbname,tbname, columnname):
 	columnname_list=[]

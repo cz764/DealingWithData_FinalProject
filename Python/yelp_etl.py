@@ -21,6 +21,7 @@ tb_yelp_phone='yelp_phone'
 tb_yelp_zipcode='yelp_zipcode'
 tb_zipcode='zipcode_nyc'
 tb_insp_norm='insp_norm'
+tb_yelp_restaurant='yelp_restaurant'
 
 url_params = {
         'term': TERM.replace(' ', '+'),
